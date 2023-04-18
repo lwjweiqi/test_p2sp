@@ -49,7 +49,7 @@ class DemoConfig(val id: String, val server: String, val url: String) {
             "vsp.mlytics.us",
             "https://1001635905572-cloudfront-6uqpagm4.svcradar.com/hls/25e6a651-ec4d-4d1f-9664-3cda54acacd9.mp4/25e6a651-ec4d-4d1f-9664-3cda54acacd9.m3u8"
         )
-        var default = ll3
+        var default = prod
     }
 
 }
