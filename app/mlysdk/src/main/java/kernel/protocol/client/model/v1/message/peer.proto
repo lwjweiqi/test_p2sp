@@ -1,0 +1,69 @@
+syntax = "proto3";
+
+package kernel.protocol.client.model.v1;
+
+import "kernel/protocol/client/model/v1/base/resource.proto";
+import "kernel/protocol/client/model/v1/message/base.proto";
+
+message PeerObtainResourceRequest {
+  string action = 1;
+  RequestHeader header = 2;
+  RequestContent content = 3;
+  reserved 4 to 15;
+
+  message RequestContent {
+    string id = 1;
+    string uri = 2;
+    ResourceRange range = 3;
+  }
+}
+
+message PeerObtainResourceResponse {
+  string action = 1;
+  ResponseHeader header = 2;
+  ResponseContent content = 3;
+  reserved 4 to 15;
+
+  message ResponseContent {
+    string id = 1;
+    string uri = 2;
+    optional string type = 3;
+    optional int64 total = 4;
+    ResourceRange range = 5;
+    bytes pieces = 6;
+  }
+}
+
+message PeerReportResourceStatMessage {
+  string action = 1;
+  MessageHeader header = 2;
+  MessageContent content = 3;
+  reserved 4 to 15;
+
+  message MessageContent {
+    ResourceStat stat = 1;
+  }
+}
+
+message PeerReportResourceStatsMessage {
+  string action = 1;
+  MessageHeader header = 2;
+  MessageContent content = 3;
+  reserved 4 to 15;
+
+  message MessageContent {
+    repeated ResourceStat stats = 1;
+  }
+}
+
+message PeerReportHealthMessage {
+  string action = 1;
+  MessageHeader header = 2;
+  reserved 3 to 15;
+}
+
+message PeerNotifyExceptionMessage {
+  string action = 1;
+  ResponseHeader header = 2;
+  reserved 3 to 15;
+}

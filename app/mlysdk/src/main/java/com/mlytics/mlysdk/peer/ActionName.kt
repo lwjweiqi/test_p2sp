@@ -1,0 +1,25 @@
+package com.mlytics.mlysdk.peer
+
+object ActionName {
+    var MESSAGE_REPORT_HEALTH = "message: report health"
+    var MESSAGE_NOTIFY_EXCEPTION = "message: notify exception"
+    var REQUEST_OBTAIN_RESOURCE = "request: obtain resource"
+    var RESPOND_OBTAIN_RESOURCE = "respond: obtain resource"
+    var MESSAGE_CONFIRM_RECEIPT = "message: confirm receipt"
+    var MESSAGE_DELIVER_EXCEPTION = "message: deliver exception"
+    var MESSAGE_DELIVER_ICE_CANDIDATE = "message: deliver ice candidate"
+    var MESSAGE_REPORT_RESOURCE_STAT = "message: report resource stat"
+    var MESSAGE_REPORT_RESOURCE_STATS = "message: report resource stats"
+    var REQUEST_ENABLE_USER = "request: enable user"
+    var RESPOND_ENABLE_USER = "respond: enable user"
+    var REQUEST_CONNECT_NODE = "request: connect node"
+    var RESPOND_CONNECT_NODE = "respond: connect node"
+    var REQUEST_CONNECT_USER = "request: connect user"
+    var RESPOND_CONNECT_USER = "respond: connect user"
+    var REQUEST_JOIN_SWARM = "request: join swarm"
+    var RESPOND_JOIN_SWARM = "respond: join swarm"
+    var MESSAGE_REPORT_SWARM_STATS = "message: report swarm stats"
+    var REQUEST_OBTAIN_SWARM_USERS = "request: obtain swarm users"
+    var RESPOND_OBTAIN_SWARM_USERS = "respond: obtain swarm users"
+    var MESSAGE_LEAVE_SWARM = "message: leave swarm"
+}

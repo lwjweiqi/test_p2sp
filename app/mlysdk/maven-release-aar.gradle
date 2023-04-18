@@ -1,0 +1,141 @@
+// 必备插件
+apply plugin: 'maven-publish'
+apply plugin: 'signing'
+
+// 刚才申请的GROUP_ID
+def GROUP_ID = 'io.github.vip-test'
+// 名称
+def ARTIFACT_ID = 'test-demo'
+// 版本
+def VERSION_NAME = '2.0.0'
+// 下面是介绍是别人在MavenCentral仓库搜索到你可以看到的消息
+def DESCRIPTION = 'test-demo'
+def GIT_LOCATION = 'github.com/test/test-demo'
+def GIT_LOCATION_URL = 'https://' + GIT_LOCATION
+
+// 每次上传新的版本必须把源代码 sources.jar 文件删除再上传
+
+//仓库地址 （直接复制不用修改）
+def MAVEN_URL = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
+// 注册 Sonatype的用户名和密码
+def nexusUsername = 'vip'
+def nexusPassword = 'Lwj@12345678.'
+
+task sourceJar(type: Jar) {
+    if (hasAndroidPlugin()) {
+        println "======> Android"
+        from android.sourceSets.main.java.srcDirs
+        //noinspection GroovyAccessibility
+        archiveClassifier = 'sources'
+    } else if (hasJavaPlugin()) {
+        println "======> Java"
+        from sourceSets.main.allSource
+        //noinspection GroovyAccessibility
+        archiveClassifier = 'sources'
+    }
+}
+
+    afterEvaluate { project ->
+    tasks.all { Task task ->
+        if (task.name.equalsIgnoreCase('publishAarPomPublishPublicationToSnapshotsRepository')) {
+            task.dependsOn tasks.getByName('assemble')
+        }
+    }
+}
+
+def hasJavaPlugin() {
+    if (plugins.hasPlugin("java-library")) {
+        return true
+    }
+    return false
+}
+
+def hasAndroidPlugin() {
+    if (plugins.hasPlugin("com.android.library")) {
+        return true
+    }
+    return false
+}
+
+publishing {
+    println "======> ${project.name}"
+    println "====> the aar path is " + "$buildDir/outputs/aar/${project.name}-release.aar"
+    println "====>" + MAVEN_URL
+    println "====>" + VERSION_NAME
+    publications {
+        aarPomPublish(MavenPublication) {
+            groupId GROUP_ID
+            artifactId ARTIFACT_ID
+            version VERSION_NAME
+//            artifact(sourceJar) // 不上传 sources源码 文件
+            artifact("$buildDir/outputs/aar/${project.name}-release.aar")
+            pom {
+                packaging 'aar'
+                name = ARTIFACT_ID
+                description = DESCRIPTION
+                url = GIT_LOCATION_URL
+                licenses {
+                    license {
+                        name = 'The Apache License, Version 2.0'
+                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+                developers {
+                    // 同样是展示到 https://search.maven.org 的信息
+                    developer {
+                        id = 'test'
+                        name = 'test'
+                        email = 'test@test.com'
+                    }
+                }
+                scm {
+                    connection = 'scm:git:' + GIT_LOCATION + '.git'
+                    developerConnection = 'scm:git:ssh://' + GIT_LOCATION + '.git'
+                    url = GIT_LOCATION_URL
+                }
+            }
+            pom.withXml {
+                def dependenciesNode = asNode().appendNode('dependencies')
+                configurations.implementation.allDependencies.each {
+                    if (it.version != "unspecified") { // 过滤项目内library引用
+                        println "=====>" + it.properties
+                        println "=====>" + it.group + "  " + it.name + it.version
+                        if (it.group == null || it.name == null || it.version == null) return
+                        if (it.group == group) return
+                        def dependencyNode = dependenciesNode.appendNode('dependency')
+                        dependencyNode.appendNode('groupId', it.group)
+                        dependencyNode.appendNode('artifactId', it.name)
+                        dependencyNode.appendNode('version', it.version)
+
+                        if (it.excludeRules.size() > 0) {
+                            def exclusionsNode = dependencyNode.appendNode('exclusions')
+                            it.excludeRules.each { rule ->
+                                def exclusionNode = exclusionsNode.appendNode('exclusion')
+                                exclusionNode.appendNode('groupId', rule.group)
+                                exclusionNode.appendNode('artifactId', rule.module)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    repositories {
+        maven {
+            allowInsecureProtocol = true
+            name "snapshots"
+            url MAVEN_URL
+            credentials {
+                username = nexusUsername
+                password = nexusPassword
+            }
+        }
+    }
+}
+
+// signing 必须在 publishing 配置之后
+signing {
+    sign publishing.publications.aarPomPublish
+}
+

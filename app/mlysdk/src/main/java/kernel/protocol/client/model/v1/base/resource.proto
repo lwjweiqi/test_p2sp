@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package kernel.protocol.client.model.v1;
+
+message ResourceRange {
+  int64 start = 1;
+  int64 end = 2;
+}
+
+message ResourceStat {
+  string id = 1;
+  int64 completion = 2;
+}

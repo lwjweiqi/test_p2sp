@@ -1,0 +1,10 @@
+syntax = "proto3";
+
+package kernel.protocol.client.model.v1;
+
+message WebRTCICE {
+  optional string candidate = 1;
+  optional string sdpMid = 2;
+  optional int64 sdpMLineIndex = 3;
+  optional string usernameFragment = 4;
+}

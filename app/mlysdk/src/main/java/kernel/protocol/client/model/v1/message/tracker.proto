@@ -1,0 +1,180 @@
+syntax = "proto3";
+
+package kernel.protocol.client.model.v1;
+
+import "google/protobuf/struct.proto";
+
+import "kernel/protocol/client/model/v1/base/webrtc.proto";
+import "kernel/protocol/client/model/v1/message/base.proto";
+
+message TrackerEnableUserRequest {
+  string action = 1;
+  RequestHeader header = 2;
+  reserved 3 to 15;
+}
+
+message TrackerEnableUserResponse {
+  string action = 1;
+  ResponseHeader header = 2;
+  reserved 3 to 15;
+}
+
+message TrackerConnectNodeRequest {
+  string action = 1;
+  RequestHeader header = 2;
+  RequestContent content = 3;
+  reserved 4 to 15;
+
+  message RequestContent {
+    string sdp = 1;
+    string type = 2;
+  }
+}
+
+message TrackerConnectNodeResponse {
+  string action = 1;
+  ResponseHeader header = 2;
+  ResponseContent content = 3;
+  reserved 4 to 15;
+
+  message ResponseContent {
+    string peer_id = 1;
+    string sdp = 2;
+    string type = 3;
+  }
+}
+
+message TrackerConnectUserRequest {
+  string action = 1;
+  RequestHeader header = 2;
+  RequestContent content = 3;
+  reserved 4 to 15;
+
+  message RequestContent {
+    string peer_id = 1;
+    string swarm_id = 2;
+    string sdp = 3;
+    string type = 4;
+  }
+}
+
+message TrackerConnectUserResponse {
+  string action = 1;
+  ResponseHeader header = 2;
+  ResponseContent content = 3;
+  reserved 4 to 15;
+
+  message ResponseContent {
+    string peer_id = 1;
+    string swarm_id = 2;
+    string sdp = 3;
+    string type = 4;
+  }
+}
+
+message TrackerJoinSwarmRequest {
+  string action = 1;
+  RequestHeader header = 2;
+  RequestContent content = 3;
+  reserved 4 to 15;
+
+  message RequestContent {
+    string swarm_id = 1;
+    double swarm_score = 2;
+  }
+}
+
+message TrackerJoinSwarmResponse {
+  string action = 1;
+  ResponseHeader header = 2;
+  reserved 3 to 15;
+}
+
+message TrackerReportSwarmStatsMessage {
+  string action = 1;
+  MessageHeader header = 2;
+  MessageContent content = 3;
+  reserved 4 to 15;
+
+  message MessageContent {
+    string swarm_id = 1;
+    double swarm_score = 2;
+  }
+}
+
+message TrackerObtainSwarmUsersRequest {
+  string action = 1;
+  RequestHeader header = 2;
+  RequestContent content = 3;
+  reserved 4 to 15;
+
+  message RequestContent {
+    string swarm_id = 1;
+  }
+}
+
+message TrackerObtainSwarmUsersResponse {
+  string action = 1;
+  ResponseHeader header = 2;
+  ResponseContent content = 3;
+  reserved 4 to 15;
+
+  message ResponseContent {
+    repeated google.protobuf.ListValue swarm_users = 1;
+  }
+}
+
+message TrackerLeaveSwarmMessage {
+  string action = 1;
+  MessageHeader header = 2;
+  MessageContent content = 3;
+  reserved 4 to 15;
+
+  message MessageContent {
+    string swarm_id = 1;
+  }
+}
+
+message TrackerReportHealthMessage {
+  string action = 1;
+  MessageHeader header = 2;
+  reserved 3 to 15;
+}
+
+message TrackerNotifyExceptionMessage {
+  string action = 1;
+  ResponseHeader header = 2;
+  reserved 3 to 15;
+}
+
+message TrackerConfirmReceiptMessage {
+  string action = 1;
+  reserved 2 to 15;
+}
+
+message TrackerDeliverExceptionMessage {
+  string action = 1;
+  RequestHeader header = 2;
+  RequestContent content = 3;
+  reserved 4 to 15;
+
+  message RequestContent {
+    string peer_id = 1;
+    int64 code = 2;
+    bool status = 3;
+    string message = 4;
+  }
+}
+
+message TrackerDeliverIceCandidateMessage {
+  string action = 1;
+  RequestHeader header = 2;
+  RequestContent content = 3;
+  reserved 4 to 15;
+
+  message RequestContent {
+    string peer_id = 1;
+    optional string swarm_id = 2;
+    WebRTCICE ice = 3;
+  }
+}
